@@ -13,6 +13,10 @@ every one of them is listed under a **Breaking** heading.
 - Config moved to `jev.default` and `jev.connections.{name}` (`api_key`, `base_url`, `model`,
   `timeout`). Republish `config/jev.php` if you published it before.
 
+### Security
+- `ConnectionRegistry` no longer keeps raw API keys: they are wrapped in `ApiKey` on construction,
+  so dumping the registry cannot print a key.
+
 ### Added
 - Project foundation: Composer package, service provider with publishable `config/jev.php`,
   ports & adapters directory layout, Pest + Testbench, Larastan (level max), Pint,
@@ -54,3 +58,5 @@ every one of them is listed under a **Breaking** heading.
   (`LocallyRateLimited`, optional blocking), circuit breaker (`CircuitOpen`, `CircuitOpened` /
   `CircuitClosed` events) and daily charged-token budget (`BudgetExceeded`), sharing counters through
   the cache and failing open if it is unavailable.
+- End-to-end secret-leak and redaction tests (canary API key and state across logs, spans, events,
+  exceptions, usage rows, queued jobs and object dumps).

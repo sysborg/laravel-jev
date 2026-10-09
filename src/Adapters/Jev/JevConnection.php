@@ -54,7 +54,7 @@ final readonly class JevConnection
      * ```
      *
      * @param  string  $name  Connection name.
-     * @param  array<array-key, mixed>  $config  `api_key`, `base_url`, `model` and `timeout.connect|request`.
+     * @param  array<array-key, mixed>  $config  `api_key` (string or {@see ApiKey}), `base_url`, `model` and `timeout.connect|request`.
      * @param  bool  $allowInsecure  Whether a plain `http://` base URL is accepted (testing only).
      * @return self The connection.
      *
@@ -65,7 +65,11 @@ final readonly class JevConnection
     {
         $apiKey = $config['api_key'] ?? null;
 
-        if (! is_string($apiKey) || trim($apiKey) === '') {
+        if (is_string($apiKey) && trim($apiKey) !== '') {
+            $apiKey = new ApiKey($apiKey);
+        }
+
+        if (! $apiKey instanceof ApiKey) {
             throw InvalidValue::because(
                 "Jev connection [{$name}] api_key",
                 'must be set (JEV_AI_API_KEY for the default connection)',
@@ -76,7 +80,7 @@ final readonly class JevConnection
 
         return new self(
             name: $name,
-            apiKey: new ApiKey($apiKey),
+            apiKey: $apiKey,
             baseUrl: self::baseUrl($name, $config['base_url'] ?? self::DEFAULT_BASE_URL, $allowInsecure),
             model: self::string($name, 'model', $config['model'] ?? self::DEFAULT_MODEL),
             connectTimeout: self::int($name, 'timeout.connect', $timeout['connect'] ?? 5),
