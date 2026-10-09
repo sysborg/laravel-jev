@@ -72,4 +72,5 @@ every one of them is listed under a **Breaking** heading.
   `--prefer-lowest` resolved to unusable releases (Symfony polyfills, Guzzle promises,
   OpenTelemetry SDK/sem-conv, Pulse), `php-http/discovery` plugin explicitly disallowed, and an
   explicit 512M memory limit for the test suite.
-
+- Domain invariant tests (exact messages, boundaries, every guard): mutation score 75.5% → 96.5%;
+  the mutation gate is now blocking.
