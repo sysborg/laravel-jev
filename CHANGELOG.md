@@ -46,3 +46,7 @@ every one of them is listed under a **Breaking** heading.
   (`jev.usage.driver = database`), `JevRun` model, `JevUsage` reports (`lastDays(7)->byModel()->get()`,
   `today()->total()`), and the `jev:usage`, `jev:balance`, `jev:models` and `jev:prune` commands.
 - Minimum Laravel 11 version raised to 11.45.
+- Observability: `LogTracer` and `OtelTracer` (`JEV_AI_TRACING=log|otel`), `OtelMetricsRecorder` and
+  `PulseMetricsRecorder` (`JEV_AI_METRICS=otel,pulse`), a Jev Pulse card (`<livewire:jev.usage />`),
+  and structured call logs with the correlation id (`JEV_AI_LOG_CALLS`). Missing optional packages
+  fall back to no-op drivers with a notice.

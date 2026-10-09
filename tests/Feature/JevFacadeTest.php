@@ -103,7 +103,7 @@ it('never lets a failing listener break the call', function () {
 
 it('can switch events off', function () {
     config()->set('jev.events.enabled', false);
-    Event::fake();
+    Event::fake([DecisionRequested::class, DecisionSucceeded::class, TokenUsageRecorded::class, DecisionFailed::class]);
     Http::fake(['*' => Http::response(jevFixture('decision-success'))]);
 
     Jev::state('text')->noul('is_urgent', 'Urgent?')->evaluate();

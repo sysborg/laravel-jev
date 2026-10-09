@@ -2,9 +2,11 @@
 
 declare(strict_types=1);
 
+use Sysborg\LaravelJevai\Tests\PulseTestCase;
 use Sysborg\LaravelJevai\Tests\TestCase;
 
 pest()->extend(TestCase::class)->in('Feature');
+pest()->extend(PulseTestCase::class)->in('Pulse');
 
 /**
  * Load a JSON fixture from tests/Fixtures/jev.

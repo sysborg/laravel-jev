@@ -176,13 +176,41 @@ return [
     | Logging
     |--------------------------------------------------------------------------
     |
-    | Log channel for package warnings (failing listeners, storage or metric
-    | errors). Null uses the application's default channel.
+    | `channel`: log channel for the package (null = default channel).
+    | `calls`: structured call logs, always with the correlation id: debug
+    | when a call starts and succeeds, warning for each retry, error when it
+    | fails. Only the redacted state preview is ever logged.
+    | Package warnings (failing listeners, storage or metric errors) are
+    | always logged.
     |
     */
 
     'logging' => [
         'channel' => env('JEV_AI_LOG_CHANNEL'),
+        'calls' => (bool) env('JEV_AI_LOG_CALLS', true),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Tracing and metrics
+    |--------------------------------------------------------------------------
+    |
+    | `tracing`: "null", "log" (spans written to the log channel at debug
+    | level) or "otel" (OpenTelemetry; requires open-telemetry/api and an
+    | SDK configured by your app). One span per call, retries included, with
+    | GenAI semantic-convention attributes.
+    |
+    | `metrics`: comma separated list of "otel" and/or "pulse" (requires
+    | laravel/pulse), or "null". Records jev.requests, jev.tokens.*,
+    | jev.credits.charged, jev.latency and jev.attempts.
+    |
+    | A driver whose package is missing falls back to "null" with a notice.
+    |
+    */
+
+    'observability' => [
+        'tracing' => env('JEV_AI_TRACING', 'null'),
+        'metrics' => env('JEV_AI_METRICS', 'null'),
     ],
 
 ];

@@ -11,6 +11,7 @@ use Sysborg\LaravelJevai\Application\Pipeline\Pipeline;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Alert;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Correlate;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Emit;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Log;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Measure;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Record;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Redact;
@@ -68,6 +69,7 @@ final class Harness
      *     sessionFallback?: bool,
      *     maxBodyBytes?: int,
      *     lowBalanceTokens?: int|null,
+     *     logCalls?: bool,
      * }  $options  Overrides of the defaults.
      */
     public function __construct(array $options = [])
@@ -88,7 +90,9 @@ final class Harness
         $events = new SafeEventPublisher($this->events, $this->logger, $options['eventsEnabled'] ?? true);
         $policy = $options['policy'] ?? new RetryPolicy(random: new Randomizer(new Mt19937(42)));
 
-        $pipeline = new Pipeline(
+        $logCalls = $options['logCalls'] ?? false;
+
+        $pipeline = new Pipeline(...[
             new Correlate(
                 $ids,
                 $this->clock,
@@ -99,13 +103,14 @@ final class Harness
             ),
             new Validate($validator),
             new Redact($options['redactor'] ?? new Redactor),
+            ...($logCalls ? [new Log($this->logger, $this->clock)] : []),
             new Alert($events, $this->clock, $this->debouncer, $this->logger, $options['lowBalanceTokens'] ?? null, 3600),
             new Emit($events, $this->clock, $options['includeRaw'] ?? false),
             new Record($this->usage, $this->clock, $this->logger, true, $options['storePayloads'] ?? false),
             new Measure($this->metrics, $this->clock, $this->logger),
             new Trace($this->tracer),
-            new Retry($policy, $this->clock, $events),
-        );
+            new Retry($policy, $this->clock, $events, $logCalls ? $this->logger : null),
+        ]);
 
         $account = new class implements AccountGateway
         {

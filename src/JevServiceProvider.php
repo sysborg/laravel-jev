@@ -11,6 +11,11 @@ use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Pulse\Pulse;
+use Livewire\Livewire;
+use OpenTelemetry\API\Globals;
+use OpenTelemetry\API\Metrics\MeterInterface;
+use OpenTelemetry\API\Trace\TracerInterface;
 use Psr\Log\LoggerInterface;
 use Sysborg\LaravelJevai\Adapters\Console\BalanceCommand;
 use Sysborg\LaravelJevai\Adapters\Console\ModelsCommand;
@@ -24,9 +29,15 @@ use Sysborg\LaravelJevai\Adapters\Laravel\CacheDebouncer;
 use Sysborg\LaravelJevai\Adapters\Laravel\LaravelDecisionQueue;
 use Sysborg\LaravelJevai\Adapters\Laravel\LaravelEventPublisher;
 use Sysborg\LaravelJevai\Adapters\Laravel\Settings;
+use Sysborg\LaravelJevai\Adapters\Log\LogTracer;
+use Sysborg\LaravelJevai\Adapters\Null\CompositeMetricsRecorder;
 use Sysborg\LaravelJevai\Adapters\Null\NullMetricsRecorder;
 use Sysborg\LaravelJevai\Adapters\Null\NullTracer;
 use Sysborg\LaravelJevai\Adapters\Null\NullUsageRepository;
+use Sysborg\LaravelJevai\Adapters\OpenTelemetry\OtelMetricsRecorder;
+use Sysborg\LaravelJevai\Adapters\OpenTelemetry\OtelTracer;
+use Sysborg\LaravelJevai\Adapters\Pulse\JevUsageCard;
+use Sysborg\LaravelJevai\Adapters\Pulse\PulseMetricsRecorder;
 use Sysborg\LaravelJevai\Adapters\System\SystemClock;
 use Sysborg\LaravelJevai\Adapters\System\UuidV7IdGenerator;
 use Sysborg\LaravelJevai\Application\JevClient;
@@ -34,6 +45,7 @@ use Sysborg\LaravelJevai\Application\Pipeline\Pipeline;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Alert;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Correlate;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Emit;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Log;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Measure;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Record;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Redact;
@@ -100,6 +112,9 @@ final class JevServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'jev');
+        $this->registerPulseCard();
+
         if (! $this->app->runningInConsole()) {
             return;
         }
@@ -135,8 +150,8 @@ final class JevServiceProvider extends ServiceProvider
         $this->app->singleton(Settings::class, fn (Container $app): Settings => new Settings($app->make(Config::class)));
         $this->app->singleton(Clock::class, SystemClock::class);
         $this->app->singleton(IdGenerator::class, UuidV7IdGenerator::class);
-        $this->app->singleton(Tracer::class, NullTracer::class);
-        $this->app->singleton(MetricsRecorder::class, NullMetricsRecorder::class);
+        $this->app->singleton(Tracer::class, fn (Container $app): Tracer => self::tracer($app));
+        $this->app->singleton(MetricsRecorder::class, fn (Container $app): MetricsRecorder => self::metrics($app));
         $this->app->singleton(UsageRepository::class, function (Container $app): UsageRepository {
             $settings = $app->make(Settings::class);
 
@@ -240,7 +255,7 @@ final class JevServiceProvider extends ServiceProvider
             $events = $app->make(SafeEventPublisher::class);
             $logger = self::logger($app);
 
-            return new Pipeline(
+            $stages = [
                 new Correlate(
                     $app->make(IdGenerator::class),
                     $clock,
@@ -251,6 +266,7 @@ final class JevServiceProvider extends ServiceProvider
                 ),
                 new Validate($app->make(RequestValidator::class)),
                 new Redact($app->make(Redactor::class)),
+                ...($settings->bool('logging.calls', true) ? [new Log($logger, $clock)] : []),
                 new Alert(
                     $events,
                     $clock,
@@ -269,12 +285,128 @@ final class JevServiceProvider extends ServiceProvider
                 ),
                 new Measure($app->make(MetricsRecorder::class), $clock, $logger),
                 new Trace($app->make(Tracer::class)),
-                new Retry($app->make(RetryPolicy::class), $clock, $events),
-            );
+                new Retry(
+                    $app->make(RetryPolicy::class),
+                    $clock,
+                    $events,
+                    $settings->bool('logging.calls', true) ? $logger : null,
+                ),
+            ];
+
+            return new Pipeline(...$stages);
         });
 
         $this->app->singleton(JevClient::class);
         $this->app->alias(JevClient::class, Jev::class);
+    }
+
+    /**
+     * Register the Jev Pulse card (`<livewire:jev.usage />`) when Pulse and Livewire are installed.
+     *
+     * Example:
+     * ```blade
+     * <livewire:jev.usage cols="6" />
+     * ```
+     *
+     * @return void Nothing.
+     */
+    private function registerPulseCard(): void
+    {
+        if (class_exists(Pulse::class) && class_exists(Livewire::class) && $this->app->bound('livewire')) {
+            Livewire::component('jev.usage', JevUsageCard::class);
+        }
+    }
+
+    /**
+     * The configured tracer (`jev.observability.tracing`), falling back to none when its package is missing.
+     *
+     * Example:
+     * ```php
+     * self::tracer($app); // OtelTracer when JEV_AI_TRACING=otel and open-telemetry/api is installed
+     * ```
+     *
+     * @param  Container  $app  The container.
+     * @return Tracer The tracer.
+     *
+     * @throws InvalidValue When the driver is unknown.
+     */
+    private static function tracer(Container $app): Tracer
+    {
+        $driver = strtolower($app->make(Settings::class)->string('observability.tracing', 'null'));
+
+        return match ($driver) {
+            'null' => new NullTracer,
+            'log' => new LogTracer(self::logger($app), $app->make(Clock::class)),
+            'otel' => interface_exists(TracerInterface::class)
+                ? new OtelTracer(Globals::tracerProvider()->getTracer(OtelTracer::INSTRUMENTATION))
+                : self::missing($app, 'open-telemetry/api', 'tracing', new NullTracer),
+            default => throw InvalidValue::because("config jev.observability.tracing [{$driver}]", 'must be null, log or otel'),
+        };
+    }
+
+    /**
+     * The configured metrics recorders (`jev.observability.metrics`, comma separated),
+     * skipping drivers whose package is missing.
+     *
+     * Example:
+     * ```php
+     * self::metrics($app); // CompositeMetricsRecorder(otel, pulse) for JEV_AI_METRICS=otel,pulse
+     * ```
+     *
+     * @param  Container  $app  The container.
+     * @return MetricsRecorder The recorder.
+     *
+     * @throws InvalidValue When a driver is unknown.
+     */
+    private static function metrics(Container $app): MetricsRecorder
+    {
+        $recorders = [];
+
+        foreach ($app->make(Settings::class)->stringList('observability.metrics') as $driver) {
+            $recorder = match ($driver = strtolower($driver)) {
+                'null' => null,
+                'otel' => interface_exists(MeterInterface::class)
+                    ? new OtelMetricsRecorder(Globals::meterProvider()->getMeter(OtelTracer::INSTRUMENTATION))
+                    : self::missing($app, 'open-telemetry/api', 'OpenTelemetry metrics', null),
+                'pulse' => class_exists(Pulse::class)
+                    ? new PulseMetricsRecorder($app->make(Pulse::class))
+                    : self::missing($app, 'laravel/pulse', 'Pulse metrics', null),
+                default => throw InvalidValue::because("config jev.observability.metrics [{$driver}]", 'must be null, otel or pulse'),
+            };
+
+            if ($recorder !== null) {
+                $recorders[] = $recorder;
+            }
+        }
+
+        return match (count($recorders)) {
+            0 => new NullMetricsRecorder,
+            1 => $recorders[0],
+            default => new CompositeMetricsRecorder(...$recorders),
+        };
+    }
+
+    /**
+     * Log once that an optional package is missing and return the fallback.
+     *
+     * Example:
+     * ```php
+     * self::missing($app, 'laravel/pulse', 'Pulse metrics', null);
+     * ```
+     *
+     * @template TFallback
+     *
+     * @param  Container  $app  The container.
+     * @param  string  $package  The missing Composer package.
+     * @param  string  $feature  What is disabled.
+     * @param  TFallback  $fallback  What to use instead.
+     * @return TFallback The fallback.
+     */
+    private static function missing(Container $app, string $package, string $feature, mixed $fallback): mixed
+    {
+        self::logger($app)->notice("Jev {$feature} is disabled: run `composer require {$package}` to enable it.");
+
+        return $fallback;
     }
 
     /**

@@ -16,6 +16,9 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
+        <testsuite name="Pulse">
+            <directory>tests/Pulse</directory>
+        </testsuite>
     </testsuites>
     <source>
         <include>
