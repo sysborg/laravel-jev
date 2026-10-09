@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Sysborg\LaravelJevai\Tests\PulseTestCase;
 use Sysborg\LaravelJevai\Tests\TestCase;
 
-pest()->extend(TestCase::class)->in('Feature');
+pest()->extend(TestCase::class)->in('Feature', 'Live');
 pest()->extend(PulseTestCase::class)->in('Pulse');
 
 /**

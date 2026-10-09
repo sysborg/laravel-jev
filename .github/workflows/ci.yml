@@ -74,3 +74,40 @@ jobs:
 
       - name: Run tests
         run: composer test
+
+  coverage:
+    name: Coverage (Domain + Application >= 90%)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Coverage gate
+        run: composer test:coverage
+
+  mutation:
+    name: Mutation testing (Domain >= 80%)
+    runs-on: ubuntu-latest
+    # Informational until the first baseline is established on CI.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          coverage: pcov
+
+      - name: Install dependencies
+        run: composer update --prefer-dist --no-interaction --no-progress
+
+      - name: Mutation gate
+        run: composer test:mutate
+

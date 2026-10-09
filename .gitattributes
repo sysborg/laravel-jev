@@ -10,3 +10,4 @@
 /pint.json          export-ignore
 /CONTRIBUTING.md    export-ignore
 /testbench.yaml     export-ignore
+/phpunit.coverage.xml.dist export-ignore

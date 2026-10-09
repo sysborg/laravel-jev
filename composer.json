@@ -75,7 +75,9 @@
     },
     "scripts": {
         "test": "pest",
-        "test:coverage": "pest --coverage --min=90",
+        "test:coverage": "pest --configuration=phpunit.coverage.xml.dist --coverage --min=90",
+        "test:mutate": "pest --configuration=phpunit.coverage.xml.dist --mutate --everything --covered-only --path=src/Domain --min=80",
+        "test:live": "pest --testsuite=Live",
         "analyse": "phpstan analyse --memory-limit=1G",
         "format": "pint",
         "format:check": "pint --test",

@@ -60,3 +60,7 @@ every one of them is listed under a **Breaking** heading.
   the cache and failing open if it is unavailable.
 - End-to-end secret-leak and redaction tests (canary API key and state across logs, spans, events,
   exceptions, usage rows, queued jobs and object dumps).
+- Testing: `Jev::fake([...])` (answers, sequences, failures, usage/billing, web context, account,
+  queue) running the real pipeline, with `Jev::assertEvaluated()`, `assertEvaluatedTimes()`,
+  `assertJudgeUsed()`, `assertTokensUsedLessThan()`, `assertQueued()` and more; a shared gateway
+  contract suite; opt-in live smoke tests (`composer test:live`); coverage and mutation CI gates.

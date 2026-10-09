@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Coverage and mutation gates (T-06): only the Domain and Application layers,
+    which must stay above 90% line coverage (and 80% mutation score for Domain).
+    Run with: composer test:coverage / composer test:mutate (needs pcov or Xdebug).
+-->
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="vendor/phpunit/phpunit/phpunit.xsd"
          bootstrap="vendor/autoload.php"
@@ -16,16 +21,11 @@
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
         </testsuite>
-        <testsuite name="Pulse">
-            <directory>tests/Pulse</directory>
-        </testsuite>
-        <testsuite name="Live">
-            <directory>tests/Live</directory>
-        </testsuite>
     </testsuites>
     <source>
         <include>
-            <directory>src</directory>
+            <directory>src/Domain</directory>
+            <directory>src/Application</directory>
         </include>
     </source>
     <php>
