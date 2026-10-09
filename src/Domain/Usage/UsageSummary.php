@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Aggregated usage of one group (or of the whole period).
+ *
+ * @api
  */
 final readonly class UsageSummary
 {

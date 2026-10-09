@@ -13,6 +13,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  *
  * Published at most once per debounce window and connection, by the call that
  * observed the low balance (`X-Jev-Tokens-Remaining`).
+ *
+ * @api
  */
 final readonly class BalanceLow implements JevEvent
 {

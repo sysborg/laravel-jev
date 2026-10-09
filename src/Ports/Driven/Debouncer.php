@@ -7,6 +7,8 @@ namespace Sysborg\LaravelJevai\Ports\Driven;
 /**
  * Lets something happen at most once per time window, across processes
  * (web requests, queue workers), e.g. a low-balance alert.
+ *
+ * @api
  */
 interface Debouncer
 {

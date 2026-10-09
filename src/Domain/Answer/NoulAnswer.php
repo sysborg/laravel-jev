@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Answer to a yes/no question.
+ *
+ * @api
  */
 final readonly class NoulAnswer extends Answer
 {

@@ -18,6 +18,8 @@ use Sysborg\LaravelJevai\Application\Usage\UsageReports;
  * @method static \Sysborg\LaravelJevai\Application\Usage\UsageReport period(string $period)
  *
  * @see UsageReports
+ *
+ * @api
  */
 final class JevUsage extends Facade
 {

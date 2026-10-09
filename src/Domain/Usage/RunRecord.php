@@ -17,6 +17,8 @@ use Sysborg\LaravelJevai\Domain\WebContext\WebContextResult;
 
 /**
  * One finished call, as stored for usage and cost accounting.
+ *
+ * @api
  */
 final readonly class RunRecord
 {

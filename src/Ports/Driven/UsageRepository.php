@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\Usage\UsageSummary;
 
 /**
  * Stores finished calls and aggregates them for usage and cost reporting.
+ *
+ * @api
  */
 interface UsageRepository
 {

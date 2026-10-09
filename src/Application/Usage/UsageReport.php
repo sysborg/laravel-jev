@@ -17,6 +17,8 @@ use Sysborg\LaravelJevai\Ports\Driven\UsageRepository;
  * JevUsage::lastDays(7)->byModel()->get();     // one UsageSummary per model
  * JevUsage::today()->whereUser('42')->total(); // a single UsageSummary
  * ```
+ *
+ * @api
  */
 final readonly class UsageReport
 {

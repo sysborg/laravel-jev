@@ -48,6 +48,8 @@ use Sysborg\LaravelJevai\Ports\Driven\WebContextGateway;
  * Jev::assertEvaluated(fn (DecisionRequest $request) => $request->questions?->has('department'));
  * Jev::assertTokensUsedLessThan(500);
  * ```
+ *
+ * @api
  */
 final class JevFake implements AccountGateway, DecisionGateway, DecisionQueue, WebContextGateway
 {

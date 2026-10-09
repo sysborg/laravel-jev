@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
 
 /**
  * The circuit breaker closed again: a call succeeded after the circuit had opened.
+ *
+ * @api
  */
 final readonly class CircuitClosed implements JevEvent
 {

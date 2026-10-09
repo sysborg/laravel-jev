@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Exceptions;
 
 /**
  * The package's own rate limiter refused the attempt before it was sent. Not billed.
+ *
+ * @api
  */
 final class LocallyRateLimited extends JevException
 {

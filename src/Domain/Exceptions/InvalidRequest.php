@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 422 (or 400): Jev rejected the request body. Not charged.
+ *
+ * @api
  */
 final class InvalidRequest extends JevException
 {

@@ -4,6 +4,11 @@ declare(strict_types=1);
 
 namespace Sysborg\LaravelJevai\Domain\Question;
 
+/**
+ * The kinds of question Jev answers; sent as the question `type`.
+ *
+ * @api
+ */
 enum QuestionType: string
 {
     /** Yes/no question answered with the probability of "yes". */

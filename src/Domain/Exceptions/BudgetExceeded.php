@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Exceptions;
 
 /**
  * The daily budget of charged input tokens is used up: the call was not sent. Not billed.
+ *
+ * @api
  */
 final class BudgetExceeded extends JevException
 {

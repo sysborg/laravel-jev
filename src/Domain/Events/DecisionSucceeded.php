@@ -12,6 +12,8 @@ use Sysborg\LaravelJevai\Domain\Usage\RunOperation;
 
 /**
  * A decision (inline questions or saved judge) succeeded. Carries the full result.
+ *
+ * @api
  */
 final readonly class DecisionSucceeded implements JevEvent
 {

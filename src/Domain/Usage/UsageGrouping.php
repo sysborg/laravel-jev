@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Usage;
 
 /**
  * How usage summaries are grouped.
+ *
+ * @api
  */
 enum UsageGrouping: string
 {

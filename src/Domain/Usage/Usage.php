@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Tokens consumed by a call, as reported in the response `usage` object.
+ *
+ * @api
  */
 final readonly class Usage
 {

@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Pick one of 2–255 named options.
+ *
+ * @api
  */
 final readonly class ChoiceQuestion extends Question
 {

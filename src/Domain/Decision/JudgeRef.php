@@ -12,6 +12,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
  *
  * Without a revision the latest rules are used. With one, Jev answers 409
  * when the rules have changed since.
+ *
+ * @api
  */
 final readonly class JudgeRef
 {

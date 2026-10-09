@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Usage;
 
 /**
  * Final outcome of a call, after retries.
+ *
+ * @api
  */
 enum RunStatus: string
 {

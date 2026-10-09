@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Answer to a choice question.
+ *
+ * @api
  */
 final readonly class ChoiceAnswer extends Answer
 {

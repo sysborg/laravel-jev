@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * A named, typed question Jev answers about the request state.
+ *
+ * @api
  */
 abstract readonly class Question
 {

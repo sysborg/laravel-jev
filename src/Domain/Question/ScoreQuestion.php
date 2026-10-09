@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Place the state on an ordered scale of 2–10 levels.
+ *
+ * @api
  */
 final readonly class ScoreQuestion extends Question
 {

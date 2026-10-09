@@ -14,6 +14,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
  * The 1–64 uniquely identified questions of a single decision request.
  *
  * @implements IteratorAggregate<string, Question>
+ *
+ * @api
  */
 final readonly class QuestionSet implements Countable, IteratorAggregate
 {

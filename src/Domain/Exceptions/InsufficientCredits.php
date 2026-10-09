@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 402: neither paid input tokens nor credits can cover the request. Not charged.
+ *
+ * @api
  */
 final class InsufficientCredits extends JevException
 {

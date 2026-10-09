@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  * Receipt of a decision queued for background evaluation.
  *
  * The result arrives through events carrying the same correlation id.
+ *
+ * @api
  */
 final readonly class PendingDecision
 {

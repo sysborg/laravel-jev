@@ -13,6 +13,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
  * Never sent to Jev. Use it to route results back to your models,
  * e.g. ['ticket_id' => 42]. Holds only scalars, null and arrays so
  * events stay serializable for queued listeners.
+ *
+ * @api
  */
 final readonly class Context
 {

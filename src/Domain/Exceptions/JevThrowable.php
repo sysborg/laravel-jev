@@ -9,5 +9,7 @@ use Throwable;
 /**
  * Marker implemented by every exception thrown by this package,
  * so applications can catch them all with a single type.
+ *
+ * @api
  */
 interface JevThrowable extends Throwable {}

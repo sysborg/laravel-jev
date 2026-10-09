@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 409: a revision was pinned but the judge rules have changed since.
+ *
+ * @api
  */
 final class JudgeRevisionMismatch extends JevException
 {

@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * Any other error status returned by Jev.
+ *
+ * @api
  */
 final class ApiError extends JevException
 {

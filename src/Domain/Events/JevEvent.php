@@ -13,6 +13,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  *
  * Implementations must be serializable (scalars, arrays and domain value
  * objects only) so they can be handled by queued listeners.
+ *
+ * @api
  */
 interface JevEvent
 {

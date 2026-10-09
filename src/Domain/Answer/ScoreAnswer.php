@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Answer to a score question.
+ *
+ * @api
  */
 final readonly class ScoreAnswer extends Answer
 {

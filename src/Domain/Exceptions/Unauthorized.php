@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 401: the API key is missing, invalid or revoked.
+ *
+ * @api
  */
 final class Unauthorized extends JevException
 {

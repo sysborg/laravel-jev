@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\WebContext\WebContextResult;
 
 /**
  * A web-context call succeeded. Carries the full result.
+ *
+ * @api
  */
 final readonly class WebContextResolved implements JevEvent
 {

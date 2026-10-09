@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
  * Labels sent to Jev's private `trace` field (stored by Jev, not sent to providers).
  *
  * Limited to 64 fields and 8,192 bytes of JSON.
+ *
+ * @api
  */
 final readonly class Trace
 {

@@ -11,6 +11,8 @@ namespace Sysborg\LaravelJevai\Domain\Question;
  * ```php
  * new NoulQuestion('is_urgent', 'Does this convey urgency?');
  * ```
+ *
+ * @api
  */
 final readonly class NoulQuestion extends Question
 {

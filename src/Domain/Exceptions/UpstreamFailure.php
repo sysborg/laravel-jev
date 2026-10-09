@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 502 / 503 / 504: the model provider behind Jev failed. Not billed.
+ *
+ * @api
  */
 final class UpstreamFailure extends JevException
 {

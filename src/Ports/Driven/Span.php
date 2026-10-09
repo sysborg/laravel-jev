@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * The tracing span of the work currently running inside {@see Tracer::span()}.
+ *
+ * @api
  */
 interface Span
 {

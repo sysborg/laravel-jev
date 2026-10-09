@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Exceptions\InvalidValue;
 
 /**
  * Which usage records to summarize and how to group them.
+ *
+ * @api
  */
 final readonly class UsageQuery
 {

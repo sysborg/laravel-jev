@@ -15,6 +15,8 @@ use Sysborg\LaravelJevai\Domain\Usage\RunOperation;
  *
  * Published right after the call's {@see DecisionFailed}; the call was not charged.
  * Every following call will fail the same way until the account is topped up.
+ *
+ * @api
  */
 final readonly class CreditsExhausted implements JevEvent
 {

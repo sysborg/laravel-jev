@@ -16,6 +16,8 @@ use Sysborg\LaravelJevai\Domain\Question\QuestionType;
  * Answers of a decision, keyed by question id.
  *
  * @implements IteratorAggregate<string, Answer>
+ *
+ * @api
  */
 final readonly class AnswerSet implements Countable, IteratorAggregate
 {

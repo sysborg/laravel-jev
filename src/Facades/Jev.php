@@ -37,6 +37,8 @@ use Sysborg\LaravelJevai\Ports\Driving\Jev as JevContract;
  * @method static void assertQueued(\Closure|null $matching = null)
  *
  * @see JevClient
+ *
+ * @api
  */
 final class Jev extends Facade
 {

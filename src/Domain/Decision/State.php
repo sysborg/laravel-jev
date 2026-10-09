@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * The input Jev decides on: free text or structured data.
+ *
+ * @api
  */
 final readonly class State
 {

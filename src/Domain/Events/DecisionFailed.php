@@ -14,6 +14,8 @@ use Sysborg\LaravelJevai\Domain\Usage\RunOperation;
  * A call failed after all retries (any operation, including web context).
  *
  * Holds a serializable description of the exception, not the exception itself.
+ *
+ * @api
  */
 final readonly class DecisionFailed implements JevEvent
 {

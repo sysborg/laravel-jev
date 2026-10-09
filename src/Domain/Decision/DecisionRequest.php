@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * A call to the Jev decision endpoint: either inline questions or a saved judge.
+ *
+ * @api
  */
 final readonly class DecisionRequest
 {

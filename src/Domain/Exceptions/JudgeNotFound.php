@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 404: the saved judge was deleted or is not accessible with this key.
+ *
+ * @api
  */
 final class JudgeNotFound extends JevException
 {

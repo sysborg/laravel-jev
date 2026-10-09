@@ -13,6 +13,8 @@ use Sysborg\LaravelJevai\Domain\Usage\RunOperation;
 
 /**
  * An attempt failed with a retryable error; another attempt follows after a delay.
+ *
+ * @api
  */
 final readonly class RetryScheduled implements JevEvent
 {

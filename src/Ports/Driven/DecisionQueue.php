@@ -15,6 +15,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  * events it emits can be matched with the {@see PendingDecision}
  * returned to the caller. It must never retry a failed evaluation on its own:
  * Jev has no idempotency key, so a retried job could be billed twice.
+ *
+ * @api
  */
 interface DecisionQueue
 {

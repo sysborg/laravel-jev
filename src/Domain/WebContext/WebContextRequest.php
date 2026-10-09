@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * A yes/no question answered with and without web evidence.
+ *
+ * @api
  */
 final readonly class WebContextRequest
 {

@@ -7,6 +7,8 @@ namespace Sysborg\LaravelJevai\Domain\Exceptions;
 /**
  * The circuit breaker is open after repeated upstream failures: the call fails fast
  * without being sent. Not billed.
+ *
+ * @api
  */
 final class CircuitOpen extends JevException
 {

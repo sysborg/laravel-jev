@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
 
 /**
  * {@see JevEvent} accessors for events with `correlationId`, `context` and `occurredAt` properties.
+ *
+ * @api
  */
 trait DescribesCall
 {

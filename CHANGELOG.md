@@ -64,3 +64,6 @@ every one of them is listed under a **Breaking** heading.
   queue) running the real pipeline, with `Jev::assertEvaluated()`, `assertEvaluatedTimes()`,
   `assertJudgeUsed()`, `assertTokensUsedLessThan()`, `assertQueued()` and more; a shared gateway
   contract suite; opt-in live smoke tests (`composer test:live`); coverage and mutation CI gates.
+- Documentation in English and Brazilian Portuguese (`docs/en`, `docs/pt-BR`, `README.pt-BR.md`):
+  getting started, configuration, architecture, observability, billing/retries/limits, security,
+  testing and open beta. Public API classes are marked `@api`.

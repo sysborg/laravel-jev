@@ -8,6 +8,8 @@ use Sysborg\LaravelJevai\Domain\Events\JevEvent;
 
 /**
  * Delivers package events to the host application (e.g. Laravel's dispatcher).
+ *
+ * @api
  */
 interface EventPublisher
 {

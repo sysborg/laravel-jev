@@ -24,6 +24,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  * Implementations perform exactly one attempt: no retries, no events, no
  * logging of request data. Retries, observability and usage recording are
  * the application layer's job, so every adapter (HTTP, fake) behaves the same.
+ *
+ * @api
  */
 interface DecisionGateway
 {

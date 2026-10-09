@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Usage;
 
 /**
  * Which Jev operation a usage record refers to.
+ *
+ * @api
  */
 enum RunOperation: string
 {

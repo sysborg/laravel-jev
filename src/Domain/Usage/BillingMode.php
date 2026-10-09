@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Domain\Usage;
 
 /**
  * How Jev paid for a call (`X-Jev-Billing` / `billing.mode`).
+ *
+ * @api
  */
 enum BillingMode: string
 {

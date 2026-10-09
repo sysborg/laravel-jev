@@ -12,6 +12,8 @@ use Throwable;
  *
  * Every subclass tells the caller whether retrying is safe and whether
  * Jev may have charged for the failed call.
+ *
+ * @api
  */
 abstract class JevException extends RuntimeException implements JevThrowable
 {

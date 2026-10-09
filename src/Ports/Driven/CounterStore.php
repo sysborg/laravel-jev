@@ -8,6 +8,8 @@ namespace Sysborg\LaravelJevai\Ports\Driven;
  * Small shared key/integer store with expiry, used by the rate limiter, the
  * circuit breaker and the budget guard. Must be shared by every process
  * (web servers, queue workers) for the limits to hold globally.
+ *
+ * @api
  */
 interface CounterStore
 {

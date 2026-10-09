@@ -8,6 +8,8 @@ use DateTimeImmutable;
 
 /**
  * Time source, replaceable in tests so retries and latency are deterministic.
+ *
+ * @api
  */
 interface Clock
 {

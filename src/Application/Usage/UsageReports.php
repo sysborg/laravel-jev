@@ -16,6 +16,8 @@ use Sysborg\LaravelJevai\Ports\Driven\UsageRepository;
 
 /**
  * Entry point of usage reports, resolved by the `JevUsage` facade.
+ *
+ * @api
  */
 final readonly class UsageReports
 {

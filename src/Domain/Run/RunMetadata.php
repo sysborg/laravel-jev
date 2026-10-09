@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Who answered a call, how long it took and how to find it again.
+ *
+ * @api
  */
 final readonly class RunMetadata
 {

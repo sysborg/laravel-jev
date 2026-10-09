@@ -12,6 +12,8 @@ use Sysborg\LaravelJevai\Domain\Usage\Billing;
 
 /**
  * Everything Jev returned for a web-context request.
+ *
+ * @api
  */
 final readonly class WebContextResult
 {

@@ -61,6 +61,13 @@ interface and enum methods), has a docblock with:
 Pint's Laravel preset removes `@param`/`@return` tags that only repeat the type, so always
 include a description.
 
+Classes, interfaces and enums that belong to the **public API** carry `@api` in their class
+docblock (facades, the driving port, builders, `JevFake` and the Domain). Changing them is a
+breaking change and must be listed under **Breaking** in `CHANGELOG.md`. Internal helpers carry
+`@internal`.
+
+User documentation lives in `docs/en` and `docs/pt-BR`: update both when behaviour changes.
+
 ## Pull requests
 
 - One task per PR when possible; reference its ID in the title, e.g. `feat(domain): question value objects [D-01]`.

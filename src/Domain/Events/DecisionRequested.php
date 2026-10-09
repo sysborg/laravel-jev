@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\Usage\RunOperation;
 
 /**
  * A call to Jev is about to start (validated, before the first attempt).
+ *
+ * @api
  */
 final readonly class DecisionRequested implements JevEvent
 {

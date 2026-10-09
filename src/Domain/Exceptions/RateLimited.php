@@ -8,6 +8,8 @@ use Throwable;
 
 /**
  * 429: too many requests. Honor {@see $retryAfterSeconds} before retrying.
+ *
+ * @api
  */
 final class RateLimited extends JevException
 {

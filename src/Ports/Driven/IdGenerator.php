@@ -8,6 +8,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
 
 /**
  * Creates correlation ids, replaceable in tests for predictable values.
+ *
+ * @api
  */
 interface IdGenerator
 {

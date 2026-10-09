@@ -28,6 +28,8 @@ use Sysborg\LaravelJevai\Ports\Driving\Jev;
  * The package's implementation of the {@see Jev} contract, plus fluent builders.
  *
  * Resolved by the `Jev` facade.
+ *
+ * @api
  */
 final readonly class JevClient implements Jev
 {

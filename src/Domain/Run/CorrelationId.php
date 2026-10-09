@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Exceptions\InvalidValue;
 
 /**
  * Ties one call to its events, logs, spans, usage rows and Jev's own trace.
+ *
+ * @api
  */
 final readonly class CorrelationId implements Stringable
 {

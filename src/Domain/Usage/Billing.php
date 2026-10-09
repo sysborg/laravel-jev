@@ -12,6 +12,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
  *
  * Output tokens are free; each call draws on either paid input tokens
  * (multiplied by the model rate) or credits, never both.
+ *
+ * @api
  */
 final readonly class Billing
 {

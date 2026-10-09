@@ -17,6 +17,8 @@ use Sysborg\LaravelJevai\Domain\Usage\Usage;
 
 /**
  * Everything Jev returned for a decision call.
+ *
+ * @api
  */
 final readonly class DecisionResult
 {

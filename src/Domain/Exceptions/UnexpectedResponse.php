@@ -10,6 +10,8 @@ use Throwable;
  * Jev answered with a body this package cannot understand.
  *
  * A successful status means the call was likely executed and billed.
+ *
+ * @api
  */
 final class UnexpectedResponse extends JevException
 {

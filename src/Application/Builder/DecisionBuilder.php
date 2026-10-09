@@ -35,6 +35,8 @@ use Sysborg\LaravelJevai\Ports\Driving\Jev;
  *     ->context(['ticket_id' => $ticket->id])
  *     ->evaluate();
  * ```
+ *
+ * @api
  */
 final readonly class DecisionBuilder
 {

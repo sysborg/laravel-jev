@@ -19,6 +19,8 @@ use Sysborg\LaravelJevai\Domain\WebContext\WebContextResult;
  *
  * Every call is validated, correlated, traced, measured, recorded and published
  * as events by the implementation; callers only see results or exceptions.
+ *
+ * @api
  */
 interface Jev
 {

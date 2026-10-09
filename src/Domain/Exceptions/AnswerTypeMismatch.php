@@ -9,6 +9,8 @@ use UnexpectedValueException;
 
 /**
  * An answer was read as a type it is not, e.g. a noul answer read as a choice.
+ *
+ * @api
  */
 final class AnswerTypeMismatch extends UnexpectedValueException implements JevThrowable
 {

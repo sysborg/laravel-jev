@@ -21,6 +21,8 @@ use Sysborg\LaravelJevai\Ports\Driving\Jev;
  *     ->numResults(6)
  *     ->resolve();
  * ```
+ *
+ * @api
  */
 final readonly class WebContextBuilder
 {

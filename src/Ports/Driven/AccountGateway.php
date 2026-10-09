@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Exceptions\JevException;
 
 /**
  * Reads account information from Jev. These calls run no inference and cost nothing.
+ *
+ * @api
  */
 interface AccountGateway
 {

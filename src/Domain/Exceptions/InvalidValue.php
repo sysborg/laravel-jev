@@ -11,6 +11,8 @@ use InvalidArgumentException;
  *
  * Messages name the offending field but never echo the value, because
  * values may carry user data (state, trace, context).
+ *
+ * @api
  */
 final class InvalidValue extends InvalidArgumentException implements JevThrowable
 {

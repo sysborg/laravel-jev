@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * A piece of evidence: returned by Jev's web search, or supplied by the app.
+ *
+ * @api
  */
 final readonly class WebSource
 {

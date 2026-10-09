@@ -11,6 +11,8 @@ use Throwable;
  *
  * Jev has no idempotency key, so the outcome is uncertain: the call may have
  * been executed and billed. It is not retryable by default.
+ *
+ * @api
  */
 final class TransportFailure extends JevException
 {

@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Ports\Driven;
 
 /**
  * Wraps work in tracing spans (OpenTelemetry, logs, or nothing).
+ *
+ * @api
  */
 interface Tracer
 {

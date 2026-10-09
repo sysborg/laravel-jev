@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * What is left on the Jev account (`GET /v1/credits`).
+ *
+ * @api
  */
 final readonly class Balance
 {

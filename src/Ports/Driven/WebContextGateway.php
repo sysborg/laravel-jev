@@ -20,6 +20,8 @@ use Sysborg\LaravelJevai\Domain\WebContext\WebContextResult;
  * Sends web-context requests to Jev (`POST /v1/web-context`).
  *
  * Same contract as {@see DecisionGateway}: one attempt, no side effects.
+ *
+ * @api
  */
 interface WebContextGateway
 {

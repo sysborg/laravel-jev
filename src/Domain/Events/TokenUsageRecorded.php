@@ -13,6 +13,8 @@ use Sysborg\LaravelJevai\Domain\Usage\Usage;
 
 /**
  * Tokens consumed and charges of one successful call, for cost tracking.
+ *
+ * @api
  */
 final readonly class TokenUsageRecorded implements JevEvent
 {

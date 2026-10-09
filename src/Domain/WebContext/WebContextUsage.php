@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Usage\Usage;
 
 /**
  * Tokens and calls consumed by a web-context request.
+ *
+ * @api
  */
 final readonly class WebContextUsage
 {

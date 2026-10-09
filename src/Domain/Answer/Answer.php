@@ -11,6 +11,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Jev's answer to one question.
+ *
+ * @api
  */
 abstract readonly class Answer
 {

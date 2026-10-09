@@ -9,6 +9,8 @@ use Sysborg\LaravelJevai\Domain\Support\Guard;
 
 /**
  * Server-side time split of a web-context request, as reported by Jev.
+ *
+ * @api
  */
 final readonly class WebContextLatency
 {

@@ -14,6 +14,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
  *
  * Published right after the call's {@see DecisionFailed}. Review the new rules,
  * then update the pinned revision (or drop the pin to always use the latest).
+ *
+ * @api
  */
 final readonly class JudgeRulesChanged implements JevEvent
 {

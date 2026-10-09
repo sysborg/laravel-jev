@@ -10,6 +10,8 @@ use Sysborg\LaravelJevai\Domain\Run\CorrelationId;
 
 /**
  * The circuit breaker opened: calls on this connection fail fast for a while.
+ *
+ * @api
  */
 final readonly class CircuitOpened implements JevEvent
 {

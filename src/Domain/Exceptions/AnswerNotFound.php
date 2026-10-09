@@ -8,6 +8,8 @@ use OutOfBoundsException;
 
 /**
  * An answer was requested for a question id that Jev did not answer.
+ *
+ * @api
  */
 final class AnswerNotFound extends OutOfBoundsException implements JevThrowable
 {

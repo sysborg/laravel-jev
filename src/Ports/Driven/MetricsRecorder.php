@@ -6,6 +6,8 @@ namespace Sysborg\LaravelJevai\Ports\Driven;
 
 /**
  * Records counters and histograms (OpenTelemetry, Pulse, or nothing).
+ *
+ * @api
  */
 interface MetricsRecorder
 {

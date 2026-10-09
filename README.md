@@ -1,32 +1,12 @@
 # laravel-jevai
 
-> **Status: pre-release.** Under active development towards an open beta. Not ready for use yet.
+> 🇧🇷 [Leia em português](README.pt-BR.md)
 
-Laravel package for the [Jev AI decision API](https://jev-ai.pro/docs), built with ports & adapters,
-with first-class observability: lifecycle events, token usage and billing tracking, tracing and metrics.
+> **Open beta (`0.x`).** See [what that means](docs/en/beta.md).
 
-## Requirements
-
-- PHP 8.3+
-- Laravel 11, 12 or 13
-
-## Installation
-
-```bash
-composer require sysborg/laravel-jevai
-```
-
-```dotenv
-JEV_AI_API_KEY=your-key
-```
-
-Optionally publish the config:
-
-```bash
-php artisan vendor:publish --tag=jev-config
-```
-
-## Quick start
+Laravel package for the [Jev AI decision API](https://jev-ai.pro/docs), built with ports & adapters
+and first-class observability: every call's response, token usage and billing come back to your
+app through Laravel events, logs, traces, metrics, a Pulse card and a usage table.
 
 ```php
 use Sysborg\LaravelJevai\Facades\Jev;
@@ -44,45 +24,54 @@ $result = Jev::state($ticket->body)
 $result->choice('department')->choice;    // 'billing'
 $result->usage->inputTokens;              // 120
 $result->billing->inputTokensCharged;     // 120
-$result->meta->correlationId;             // UUIDv7, also sent in Jev's private trace
+$result->meta->correlationId;             // UUIDv7, shared by events, logs, spans and Jev's trace
 ```
 
-Saved judges and web context:
+## Highlights
 
-```php
-Jev::judge('judge_123', revision: 3)->state($transcript)->evaluate();
+- **Typed decisions**: `noul`, `choice` and `score` questions, saved judges (`Jev::judge()`), and
+  web context (`Jev::webContext()`), with immutable fluent builders.
+- **Responses through events**: `DecisionSucceeded`, `TokenUsageRecorded`, `DecisionFailed`,
+  `RetryScheduled`, `BalanceLow`, `CreditsExhausted`… all serializable, with your `context`.
+  `->queue()` evaluates in the background and delivers through the same events.
+- **Billing-safe retries**: 429 (`Retry-After`) and 5xx are retried; timeouts are not, because Jev
+  has no idempotency key. Optional rate limiter, circuit breaker and daily token budget.
+- **Observability**: structured logs, OpenTelemetry spans and metrics, Laravel Pulse card,
+  `jev_runs` usage table with `JevUsage` reports and `php artisan jev:usage`.
+- **Secure by default**: the API key never appears in logs, events, spans, exceptions, dumps or
+  queued jobs; the request state is redacted everywhere it is observed.
+- **Testable**: `Jev::fake([...])` runs the real pipeline without HTTP, with assertions.
 
-Jev::webContext('Has OpenAI released GPT-6?')->numResults(6)->resolve()->isYes();
+## Requirements
+
+PHP 8.3+ · Laravel 11.45+, 12 or 13
+
+## Install
+
+```bash
+composer require sysborg/laravel-jevai
 ```
 
-### Responses through events
-
-Every call dispatches Laravel events: `DecisionRequested`, then `DecisionSucceeded` /
-`WebContextResolved` + `TokenUsageRecorded`, or `DecisionFailed`; `RetryScheduled` for each retry.
-Alerts follow: `CreditsExhausted` (402), `JudgeRulesChanged` (409 on a pinned judge) and
-`BalanceLow` (set `JEV_AI_LOW_BALANCE_TOKENS`; at most once per hour). Every event carries the
-correlation id, your `context`, the connection and the model. A failing listener never breaks the call.
-
-```php
-use Sysborg\LaravelJevai\Domain\Events\DecisionSucceeded;
-
-Event::listen(function (DecisionSucceeded $event) {
-    Ticket::find($event->context()->get('ticket_id'))
-        ->routeTo($event->result->choice('department')->choice);
-});
-
-// Background evaluation: the result arrives through the same events.
-$pending = Jev::state($ticket->body)->noul('is_urgent', 'Urgent?')->context('ticket_id', $ticket->id)->queue();
+```dotenv
+JEV_AI_API_KEY=your-key
 ```
 
-### Retries and billing safety
+## Documentation
 
-429 (honoring `Retry-After`) and 502/503/504 are retried with backoff. Timeouts are **not**
-retried by default: Jev has no idempotency key, so a timed-out call may already have been billed.
+| | |
+|---|---|
+| [Getting started](docs/en/getting-started.md) | install, first decision, judges, web context, queue, errors |
+| [Configuration](docs/en/configuration.md) | every config key and env variable |
+| [Architecture](docs/en/architecture.md) | ports & adapters, the call pipeline, custom adapters |
+| [Observability](docs/en/observability.md) | events catalog, logs, tracing, metrics, Pulse, usage reports |
+| [Billing, retries and limits](docs/en/billing-and-retries.md) | what is billed, what is retried, client-side limits |
+| [Security](docs/en/security.md) | API key handling, redaction, what leaves your app |
+| [Testing](docs/en/testing.md) | `Jev::fake()`, assertions, live smoke tests |
+| [Open beta](docs/en/beta.md) | stability guarantees, known limitations, reporting issues |
 
-## Roadmap
+## Contributing
 
-See [docs/open-beta-tasks.md](docs/open-beta-tasks.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md). Security issues: [SECURITY.md](SECURITY.md).
 
 ## License
 
