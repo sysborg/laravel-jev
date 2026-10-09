@@ -130,4 +130,23 @@ final readonly class WebContextResult
             $this->sourceWeights, $this->usage, $this->latency, $this->meta, $this->billing,
         );
     }
+
+    /**
+     * Return a copy with other run metadata, e.g. after retries were counted.
+     *
+     * Example:
+     * ```php
+     * $result = $result->withMeta($result->meta->withTiming($elapsedMs, $attempts));
+     * ```
+     *
+     * @param  RunMetadata  $meta  The new metadata.
+     * @return self A new result; the original is unchanged.
+     */
+    public function withMeta(RunMetadata $meta): self
+    {
+        return new self(
+            $this->decision, $this->confidence, $this->withWeb, $this->withoutWeb, $this->sources,
+            $this->sourceWeights, $this->usage, $this->latency, $meta, $this->billing, $this->raw,
+        );
+    }
 }

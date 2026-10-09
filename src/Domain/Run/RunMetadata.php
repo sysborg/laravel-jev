@@ -75,4 +75,47 @@ final readonly class RunMetadata
     {
         return $this->attempts > 1;
     }
+
+    /**
+     * Return a copy with the timing of the whole call, retries included.
+     *
+     * Gateways report a single attempt; the application stamps the final numbers.
+     *
+     * Example:
+     * ```php
+     * $meta = $result->meta->withTiming(latencyMs: 1_240, attempts: 3);
+     * ```
+     *
+     * @param  int  $latencyMs  Wall time of the whole call in milliseconds.
+     * @param  int  $attempts  Number of HTTP attempts, at least 1.
+     * @return self A new metadata; the original is unchanged.
+     *
+     * @throws InvalidValue When the latency is negative or attempts is lower than 1.
+     */
+    public function withTiming(int $latencyMs, int $attempts): self
+    {
+        return new self(
+            $this->correlationId, $this->model, $latencyMs, $attempts, $this->responseId,
+            $this->runId, $this->provider, $this->judgeId, $this->judgeRevision, $this->connection,
+        );
+    }
+
+    /**
+     * Return a copy tagged with the package connection that made the call.
+     *
+     * Example:
+     * ```php
+     * $meta = $meta->withConnection('tenant-a');
+     * ```
+     *
+     * @param  string|null  $connection  Connection name, or null for the default one.
+     * @return self A new metadata; the original is unchanged.
+     */
+    public function withConnection(?string $connection): self
+    {
+        return new self(
+            $this->correlationId, $this->model, $this->latencyMs, $this->attempts, $this->responseId,
+            $this->runId, $this->provider, $this->judgeId, $this->judgeRevision, $connection,
+        );
+    }
 }

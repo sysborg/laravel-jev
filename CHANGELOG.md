@@ -17,3 +17,7 @@ every one of them is listed under a **Breaking** heading.
   (inline questions or saved judge), `State`, `Trace`, `Context`, `JudgeRef`, `DecisionResult`,
   `Usage`, `Billing` / `BillingMode`, `CorrelationId`, `RunMetadata`, web-context request/result
   types, and the `JevException` hierarchy with retry and billing semantics.
+- Ports: driven interfaces (`DecisionGateway`, `WebContextGateway`, `AccountGateway`, `EventPublisher`,
+  `UsageRepository`, `Tracer` / `Span`, `MetricsRecorder`, `Clock`, `IdGenerator`) and the driving
+  `Jev` contract, plus the domain types they need (`Balance`, `JevEvent`, `PendingDecision`,
+  `RunRecord`, `UsageQuery`, `UsageSummary`).

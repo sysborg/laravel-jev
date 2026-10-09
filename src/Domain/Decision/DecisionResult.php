@@ -131,4 +131,20 @@ final readonly class DecisionResult
     {
         return new self($this->answers, $this->usage, $this->billing, $this->meta);
     }
+
+    /**
+     * Return a copy with other run metadata, e.g. after retries were counted.
+     *
+     * Example:
+     * ```php
+     * $result = $result->withMeta($result->meta->withTiming($elapsedMs, $attempts));
+     * ```
+     *
+     * @param  RunMetadata  $meta  The new metadata.
+     * @return self A new result; the original is unchanged.
+     */
+    public function withMeta(RunMetadata $meta): self
+    {
+        return new self($this->answers, $this->usage, $this->billing, $meta, $this->raw);
+    }
 }
