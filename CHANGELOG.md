@@ -29,3 +29,16 @@ every one of them is listed under a **Breaking** heading.
   HTTP client, with error mapping, header/billing mapping, strict-but-tolerant response parsing,
   per-connection configuration (`ConnectionRegistry`, `GatewayFactory`), a leak-proof `ApiKey`
   and `SystemClock`.
+- Application layer: `JevClient` (the `Jev` facade), immutable fluent builders, use cases, and the
+  call pipeline `Correlate → Validate → Redact → Emit → Record → Measure → Trace → Retry` with
+  UUIDv7 correlation ids, body-size validation, state/trace redaction, retry policy (429 Retry-After,
+  5xx backoff, no timeout retries by default), and isolated side effects.
+- Events: `DecisionRequested`, `DecisionSucceeded`, `DecisionFailed`, `RetryScheduled`,
+  `WebContextResolved`, `TokenUsageRecorded`, dispatched through Laravel's event dispatcher.
+- Queued decisions: `Jev::queue()` / `->queue()` dispatch `EvaluateDecisionJob` (single try);
+  results arrive through events with the returned correlation id.
+- Config sections `retry`, `correlation`, `redaction`, `events`, `usage`, `queue`, `logging`.
+- Alert events: `BalanceLow` (threshold on `X-Jev-Tokens-Remaining`, debounced through the cache,
+  config `jev.alerts.*`), `CreditsExhausted` (402) and `JudgeRulesChanged` (409), published by a new
+  `Alert` pipeline stage after the lifecycle events.
+- Every event now carries the connection name and the model (requested or connection default).

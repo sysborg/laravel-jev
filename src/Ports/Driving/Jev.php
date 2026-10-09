@@ -73,20 +73,21 @@ interface Jev
      *
      * Example:
      * ```php
-     * $result = $jev->webContext(
+     * $result = $jev->resolveWebContext(
      *     WebContextRequest::ask('Has OpenAI released GPT-6?')->withNumResults(6),
      * );
      *
-     * $result->isYes();                  // true
+     * $result->isYes();                   // true
      * $result->evidenceChangedDecision(); // true
      * ```
      *
      * @param  WebContextRequest  $request  The question, search options or own sources.
      * @return WebContextResult Decision, evidence, usage, latency, billing and metadata.
      *
+     * @throws InvalidValue When the request breaks a documented Jev limit (checked before sending).
      * @throws JevException When the call fails after the configured retries.
      */
-    public function webContext(WebContextRequest $request): WebContextResult;
+    public function resolveWebContext(WebContextRequest $request): WebContextResult;
 
     /**
      * List the model names available to the account. Runs no inference.
@@ -115,19 +116,4 @@ interface Jev
      * @throws JevException When the call fails.
      */
     public function balance(): Balance;
-
-    /**
-     * Use another configured connection (API key, base URL, default model).
-     *
-     * Example:
-     * ```php
-     * $jev->connection('tenant-a')->decide($request);
-     * ```
-     *
-     * @param  string|null  $name  Name under `jev.connections`, or null for the default.
-     * @return self A client bound to that connection.
-     *
-     * @throws InvalidValue When no connection has that name.
-     */
-    public function connection(?string $name = null): self;
 }
