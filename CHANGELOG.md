@@ -10,6 +10,8 @@ every one of them is listed under a **Breaking** heading.
 ## [Unreleased]
 
 ### Breaking
+- Laravel 11 is no longer supported: every Laravel 11 release is flagged by security advisories
+  and current Composer refuses to install it. Requires Laravel 12 or 13.
 - Config moved to `jev.default` and `jev.connections.{name}` (`api_key`, `base_url`, `model`,
   `timeout`). Republish `config/jev.php` if you published it before.
 
@@ -49,7 +51,6 @@ every one of them is listed under a **Breaking** heading.
 - Usage and cost accounting: `jev_runs` migration (`--tag=jev-migrations`), database usage repository
   (`jev.usage.driver = database`), `JevRun` model, `JevUsage` reports (`lastDays(7)->byModel()->get()`,
   `today()->total()`), and the `jev:usage`, `jev:balance`, `jev:models` and `jev:prune` commands.
-- Minimum Laravel 11 version raised to 11.45.
 - Observability: `LogTracer` and `OtelTracer` (`JEV_AI_TRACING=log|otel`), `OtelMetricsRecorder` and
   `PulseMetricsRecorder` (`JEV_AI_METRICS=otel,pulse`), a Jev Pulse card (`<livewire:jev.usage />`),
   and structured call logs with the correlation id (`JEV_AI_LOG_CALLS`). Missing optional packages
@@ -67,3 +68,8 @@ every one of them is listed under a **Breaking** heading.
 - Documentation in English and Brazilian Portuguese (`docs/en`, `docs/pt-BR`, `README.pt-BR.md`):
   getting started, configuration, architecture, observability, billing/retries/limits, security,
   testing and open beta. Public API classes are marked `@api`.
+- CI hardening for the version matrix: dev-only minimum versions for transitive packages that
+  `--prefer-lowest` resolved to unusable releases (Symfony polyfills, Guzzle promises,
+  OpenTelemetry SDK/sem-conv, Pulse), `php-http/discovery` plugin explicitly disallowed, and an
+  explicit 512M memory limit for the test suite.
+

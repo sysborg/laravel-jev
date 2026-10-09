@@ -44,7 +44,7 @@ $result->meta->correlationId;             // UUIDv7, compartilhado por eventos, 
 
 ## Requisitos
 
-PHP 8.3+ · Laravel 11.45+, 12 ou 13
+PHP 8.3+ · Laravel 12 ou 13
 
 ## Instalação
 

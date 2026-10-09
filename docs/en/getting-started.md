@@ -3,7 +3,7 @@
 ## Requirements
 
 - PHP 8.3+
-- Laravel 11.45+, 12 or 13
+- Laravel 12 or 13
 - A Jev API key ([get one](https://jev-ai.pro/jev-api-key))
 
 ## Install

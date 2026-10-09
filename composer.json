@@ -26,24 +26,32 @@
     "require": {
         "php": "^8.3",
         "guzzlehttp/guzzle": "^7.8 || ^8.0",
-        "illuminate/bus": "^11.45 || ^12.0 || ^13.0",
-        "illuminate/console": "^11.45 || ^12.0 || ^13.0",
-        "illuminate/contracts": "^11.45 || ^12.0 || ^13.0",
-        "illuminate/database": "^11.45 || ^12.0 || ^13.0",
-        "illuminate/http": "^11.45 || ^12.0 || ^13.0",
-        "illuminate/support": "^11.45 || ^12.0 || ^13.0",
+        "illuminate/bus": "^12.0 || ^13.0",
+        "illuminate/console": "^12.0 || ^13.0",
+        "illuminate/contracts": "^12.0 || ^13.0",
+        "illuminate/database": "^12.0 || ^13.0",
+        "illuminate/http": "^12.0 || ^13.0",
+        "illuminate/support": "^12.0 || ^13.0",
         "psr/log": "^1.1 || ^2.0 || ^3.0",
         "ramsey/uuid": "^4.7"
     },
     "require-dev": {
+        "guzzlehttp/promises": "^2.0.4 || ^3.0",
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.18",
-        "laravel/pulse": "^1.4",
-        "open-telemetry/api": "^1.0",
-        "open-telemetry/sdk": "^1.0",
-        "orchestra/testbench": "^9.0 || ^10.0 || ^11.0",
+        "laravel/pulse": "^1.4.1",
+        "open-telemetry/api": "^1.8",
+        "open-telemetry/sdk": "^1.13",
+        "open-telemetry/sem-conv": "^1.38",
+        "orchestra/testbench": "^10.0 || ^11.0",
         "pestphp/pest": "^4.0",
-        "pestphp/pest-plugin-laravel": "^4.0"
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "symfony/polyfill-intl-grapheme": "^1.31",
+        "symfony/polyfill-intl-idn": "^1.31",
+        "symfony/polyfill-intl-normalizer": "^1.31",
+        "symfony/polyfill-mbstring": "^1.31",
+        "symfony/polyfill-php83": "^1.31",
+        "symfony/polyfill-php84": "^1.31"
     },
     "suggest": {
         "laravel/pulse": "Required to use the Jev usage Pulse recorder and card",
@@ -90,7 +98,8 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
-            "pestphp/pest-plugin": true
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": false
         }
     },
     "minimum-stability": "stable",
