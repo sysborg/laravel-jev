@@ -67,6 +67,39 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Client-side limits
+    |--------------------------------------------------------------------------
+    |
+    | All off by default. Counters live in the cache store `cache_store`
+    | (null = default); use a shared store (Redis...) with several servers.
+    | If the store fails, calls are let through with a warning.
+    |
+    | `rate_limit_per_minute`: HTTP attempts per minute and connection (Jev
+    | allows 1000 per account). Above it, attempts throw LocallyRateLimited,
+    | or wait for the next minute when `rate_limit_block` is on (at most
+    | `rate_limit_max_wait_seconds`).
+    |
+    | `circuit_breaker_failures`: consecutive 502/503/504 or timeouts that
+    | open the circuit; calls then fail fast with CircuitOpen for
+    | `circuit_breaker_cooldown_seconds` (CircuitOpened / CircuitClosed events).
+    |
+    | `daily_input_tokens`: charged input tokens allowed per UTC day and
+    | connection; beyond it calls throw BudgetExceeded without being sent.
+    |
+    */
+
+    'limits' => [
+        'cache_store' => env('JEV_AI_LIMITS_CACHE_STORE'),
+        'rate_limit_per_minute' => env('JEV_AI_RATE_LIMIT_PER_MINUTE'),
+        'rate_limit_block' => (bool) env('JEV_AI_RATE_LIMIT_BLOCK', false),
+        'rate_limit_max_wait_seconds' => 10,
+        'circuit_breaker_failures' => env('JEV_AI_CIRCUIT_BREAKER_FAILURES'),
+        'circuit_breaker_cooldown_seconds' => (int) env('JEV_AI_CIRCUIT_BREAKER_COOLDOWN', 30),
+        'daily_input_tokens' => env('JEV_AI_DAILY_INPUT_TOKENS'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Correlation
     |--------------------------------------------------------------------------
     |

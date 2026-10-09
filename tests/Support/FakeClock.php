@@ -8,7 +8,8 @@ use DateTimeImmutable;
 use Sysborg\LaravelJevai\Ports\Driven\Clock;
 
 /**
- * Deterministic {@see Clock} for tests: every monotonic read advances by a fixed step.
+ * Deterministic {@see Clock} for tests: every monotonic read advances by a fixed step,
+ * and {@see sleep()} moves both clocks forward instead of waiting.
  */
 final class FakeClock implements Clock
 {
@@ -30,7 +31,7 @@ final class FakeClock implements Clock
      */
     public function __construct(
         private readonly float $stepMs = 0.0,
-        private readonly DateTimeImmutable $now = new DateTimeImmutable('2026-10-09 12:00:00'),
+        private DateTimeImmutable $now = new DateTimeImmutable('2026-10-09 12:00:00'),
     ) {}
 
     /**
@@ -67,7 +68,7 @@ final class FakeClock implements Clock
     }
 
     /**
-     * Record the requested pause without waiting.
+     * Record the requested pause and move time forward without waiting.
      *
      * Example:
      * ```php
@@ -81,5 +82,24 @@ final class FakeClock implements Clock
     public function sleep(int $milliseconds): void
     {
         $this->sleeps[] = $milliseconds;
+        $this->monotonic += $milliseconds;
+        $this->now = $this->now->modify("+{$milliseconds} milliseconds");
+    }
+
+    /**
+     * Move time forward without recording a sleep.
+     *
+     * Example:
+     * ```php
+     * $clock->travel(31); // 31 seconds later
+     * ```
+     *
+     * @param  int  $seconds  Seconds to move forward.
+     * @return void Nothing.
+     */
+    public function travel(int $seconds): void
+    {
+        $this->monotonic += $seconds * 1000;
+        $this->now = $this->now->modify("+{$seconds} seconds");
     }
 }

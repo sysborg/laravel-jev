@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Sysborg\LaravelJevai\Domain\Decision\Context;
 use Sysborg\LaravelJevai\Domain\Decision\DecisionRequest;
 use Sysborg\LaravelJevai\Domain\Events\BalanceLow;
+use Sysborg\LaravelJevai\Domain\Events\CircuitClosed;
+use Sysborg\LaravelJevai\Domain\Events\CircuitOpened;
 use Sysborg\LaravelJevai\Domain\Events\CreditsExhausted;
 use Sysborg\LaravelJevai\Domain\Events\DecisionFailed;
 use Sysborg\LaravelJevai\Domain\Events\DecisionRequested;
@@ -41,6 +43,8 @@ it('survives serialization for queued listeners', function (JevEvent $event) {
     'succeeded' => [new DecisionSucceeded(RunOperation::Decision, $result, $context, $now)],
     'failed' => [DecisionFailed::fromException(RunOperation::Decision, $id, $context, $now, new TransportFailure, 1, 30_000)],
     'retry' => [RetryScheduled::fromException(RunOperation::Decision, $id, $context, $now, new RateLimited(2), 1, 2_000)],
+    'circuit opened' => [new CircuitOpened($id, $context, $now, 5, 30, 'default')],
+    'circuit closed' => [new CircuitClosed($id, $context, $now, 'default')],
     'balance low' => [new BalanceLow($id, $context, $now, 8_000, 10_000, 'default', 'jev-latest')],
     'credits exhausted' => [CreditsExhausted::fromException(RunOperation::Decision, $id, $context, $now, new InsufficientCredits, 'jev-latest', 'default')],
     'judge rules changed' => [JudgeRulesChanged::fromException($id, $context, $now, new JudgeRevisionMismatch('judge_1', 2), 'default')],

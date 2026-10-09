@@ -50,3 +50,7 @@ every one of them is listed under a **Breaking** heading.
   `PulseMetricsRecorder` (`JEV_AI_METRICS=otel,pulse`), a Jev Pulse card (`<livewire:jev.usage />`),
   and structured call logs with the correlation id (`JEV_AI_LOG_CALLS`). Missing optional packages
   fall back to no-op drivers with a notice.
+- Client-side limits (all off by default, config `jev.limits.*`): per-minute rate limiter
+  (`LocallyRateLimited`, optional blocking), circuit breaker (`CircuitOpen`, `CircuitOpened` /
+  `CircuitClosed` events) and daily charged-token budget (`BudgetExceeded`), sharing counters through
+  the cache and failing open if it is unavailable.

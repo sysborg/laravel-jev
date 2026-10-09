@@ -9,10 +9,12 @@ use Random\Randomizer;
 use Sysborg\LaravelJevai\Application\JevClient;
 use Sysborg\LaravelJevai\Application\Pipeline\Pipeline;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Alert;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Budget;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Correlate;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Emit;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Log;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Measure;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Protect;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Record;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Redact;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Retry;
@@ -52,6 +54,8 @@ final class Harness
 
     public InMemoryDebouncer $debouncer;
 
+    public InMemoryCounterStore $counters;
+
     public FakeClock $clock;
 
     public JevClient $client;
@@ -70,6 +74,11 @@ final class Harness
      *     maxBodyBytes?: int,
      *     lowBalanceTokens?: int|null,
      *     logCalls?: bool,
+     *     perMinute?: int|null,
+     *     block?: bool,
+     *     failureThreshold?: int|null,
+     *     dailyInputTokens?: int|null,
+     *     clock?: FakeClock,
      * }  $options  Overrides of the defaults.
      */
     public function __construct(array $options = [])
@@ -83,7 +92,8 @@ final class Harness
         $this->queue = new RecordingDecisionQueue;
         $this->logger = new ArrayLogger;
         $this->debouncer = new InMemoryDebouncer;
-        $this->clock = new FakeClock(stepMs: 100);
+        $this->counters = new InMemoryCounterStore;
+        $this->clock = $options['clock'] ?? new FakeClock(stepMs: 100);
 
         $ids = new SequenceIdGenerator;
         $validator = new RequestValidator('jev-latest', $options['maxBodyBytes'] ?? RequestValidator::MAX_BODY_BYTES);
@@ -108,8 +118,20 @@ final class Harness
             new Emit($events, $this->clock, $options['includeRaw'] ?? false),
             new Record($this->usage, $this->clock, $this->logger, true, $options['storePayloads'] ?? false),
             new Measure($this->metrics, $this->clock, $this->logger),
+            new Budget($this->counters, $this->clock, $this->logger, $options['dailyInputTokens'] ?? null),
             new Trace($this->tracer),
             new Retry($policy, $this->clock, $events, $logCalls ? $this->logger : null),
+            new Protect(
+                $this->counters,
+                $this->clock,
+                $events,
+                $this->logger,
+                $options['perMinute'] ?? null,
+                $options['block'] ?? false,
+                10,
+                $options['failureThreshold'] ?? null,
+                30,
+            ),
         ]);
 
         $account = new class implements AccountGateway

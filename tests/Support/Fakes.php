@@ -31,6 +31,7 @@ use Sysborg\LaravelJevai\Domain\WebContext\WebContextLatency;
 use Sysborg\LaravelJevai\Domain\WebContext\WebContextRequest;
 use Sysborg\LaravelJevai\Domain\WebContext\WebContextResult;
 use Sysborg\LaravelJevai\Domain\WebContext\WebContextUsage;
+use Sysborg\LaravelJevai\Ports\Driven\CounterStore;
 use Sysborg\LaravelJevai\Ports\Driven\Debouncer;
 use Sysborg\LaravelJevai\Ports\Driven\DecisionGateway;
 use Sysborg\LaravelJevai\Ports\Driven\DecisionQueue;
@@ -465,6 +466,83 @@ final class InMemoryDebouncer implements Debouncer
         $this->claimed[$key] = $seconds;
 
         return true;
+    }
+}
+
+/**
+ * Counter store in memory (lifetimes are recorded, never enforced); can be told to throw.
+ */
+final class InMemoryCounterStore implements CounterStore
+{
+    /** @var array<string, int> */
+    public array $values = [];
+
+    public bool $fail = false;
+
+    /**
+     * @param  string  $key  Counter key.
+     * @param  int  $by  Amount.
+     * @param  int  $ttlSeconds  Ignored.
+     * @return int The new value.
+     *
+     * @throws RuntimeException When `$fail` is true.
+     */
+    public function increment(string $key, int $by, int $ttlSeconds): int
+    {
+        $this->guard();
+
+        return $this->values[$key] = ($this->values[$key] ?? 0) + $by;
+    }
+
+    /**
+     * @param  string  $key  Counter key.
+     * @return int The value, 0 when missing.
+     *
+     * @throws RuntimeException When `$fail` is true.
+     */
+    public function get(string $key): int
+    {
+        $this->guard();
+
+        return $this->values[$key] ?? 0;
+    }
+
+    /**
+     * @param  string  $key  Counter key.
+     * @param  int  $value  The value.
+     * @param  int  $ttlSeconds  Ignored.
+     * @return void Nothing.
+     *
+     * @throws RuntimeException When `$fail` is true.
+     */
+    public function put(string $key, int $value, int $ttlSeconds): void
+    {
+        $this->guard();
+        $this->values[$key] = $value;
+    }
+
+    /**
+     * @param  string  $key  Counter key.
+     * @return void Nothing.
+     *
+     * @throws RuntimeException When `$fail` is true.
+     */
+    public function forget(string $key): void
+    {
+        $this->guard();
+        unset($this->values[$key]);
+    }
+
+    /**
+     * @return void Nothing.
+     *
+     * @throws RuntimeException When `$fail` is true.
+     */
+    private function guard(): void
+    {
+        if ($this->fail) {
+            throw new RuntimeException('Cache down.');
+        }
     }
 }
 

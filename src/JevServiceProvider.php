@@ -25,6 +25,7 @@ use Sysborg\LaravelJevai\Adapters\Database\EloquentUsageRepository;
 use Sysborg\LaravelJevai\Adapters\Jev\ConnectionRegistry;
 use Sysborg\LaravelJevai\Adapters\Jev\GatewayFactory;
 use Sysborg\LaravelJevai\Adapters\Jev\JevConnection;
+use Sysborg\LaravelJevai\Adapters\Laravel\CacheCounterStore;
 use Sysborg\LaravelJevai\Adapters\Laravel\CacheDebouncer;
 use Sysborg\LaravelJevai\Adapters\Laravel\LaravelDecisionQueue;
 use Sysborg\LaravelJevai\Adapters\Laravel\LaravelEventPublisher;
@@ -43,10 +44,12 @@ use Sysborg\LaravelJevai\Adapters\System\UuidV7IdGenerator;
 use Sysborg\LaravelJevai\Application\JevClient;
 use Sysborg\LaravelJevai\Application\Pipeline\Pipeline;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Alert;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Budget;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Correlate;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Emit;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Log;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Measure;
+use Sysborg\LaravelJevai\Application\Pipeline\Stages\Protect;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Record;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Redact;
 use Sysborg\LaravelJevai\Application\Pipeline\Stages\Retry;
@@ -59,6 +62,7 @@ use Sysborg\LaravelJevai\Application\Support\SafeEventPublisher;
 use Sysborg\LaravelJevai\Domain\Exceptions\InvalidValue;
 use Sysborg\LaravelJevai\Ports\Driven\AccountGateway;
 use Sysborg\LaravelJevai\Ports\Driven\Clock;
+use Sysborg\LaravelJevai\Ports\Driven\CounterStore;
 use Sysborg\LaravelJevai\Ports\Driven\Debouncer;
 use Sysborg\LaravelJevai\Ports\Driven\DecisionGateway;
 use Sysborg\LaravelJevai\Ports\Driven\DecisionQueue;
@@ -202,6 +206,10 @@ final class JevServiceProvider extends ServiceProvider
             $app->make(CacheFactory::class)->store($app->make(Settings::class)->nullableString('alerts.cache_store')),
         ));
 
+        $this->app->singleton(CounterStore::class, fn (Container $app): CounterStore => new CacheCounterStore(
+            $app->make(CacheFactory::class)->store($app->make(Settings::class)->nullableString('limits.cache_store')),
+        ));
+
         $this->app->singleton(DecisionQueue::class, fn (Container $app): DecisionQueue => new LaravelDecisionQueue(
             $app->make(BusDispatcher::class),
             $app->make(Settings::class)->nullableString('queue.connection'),
@@ -284,12 +292,29 @@ final class JevServiceProvider extends ServiceProvider
                     $settings->bool('usage.store_payloads', false),
                 ),
                 new Measure($app->make(MetricsRecorder::class), $clock, $logger),
+                new Budget(
+                    $app->make(CounterStore::class),
+                    $clock,
+                    $logger,
+                    $settings->nullableInt('limits.daily_input_tokens'),
+                ),
                 new Trace($app->make(Tracer::class)),
                 new Retry(
                     $app->make(RetryPolicy::class),
                     $clock,
                     $events,
                     $settings->bool('logging.calls', true) ? $logger : null,
+                ),
+                new Protect(
+                    $app->make(CounterStore::class),
+                    $clock,
+                    $events,
+                    $logger,
+                    $settings->nullableInt('limits.rate_limit_per_minute'),
+                    $settings->bool('limits.rate_limit_block', false),
+                    $settings->int('limits.rate_limit_max_wait_seconds', 10),
+                    $settings->nullableInt('limits.circuit_breaker_failures'),
+                    $settings->int('limits.circuit_breaker_cooldown_seconds', 30),
                 ),
             ];
 
