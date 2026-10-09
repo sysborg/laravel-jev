@@ -66,7 +66,7 @@ jobs:
 
       - name: Pin Laravel version
         run: |
-          composer require "illuminate/support:${{ matrix.laravel }}" "illuminate/http:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/bus:${{ matrix.laravel }}" --no-update --no-interaction
+          composer require "illuminate/support:${{ matrix.laravel }}" "illuminate/http:${{ matrix.laravel }}" "illuminate/contracts:${{ matrix.laravel }}" "illuminate/bus:${{ matrix.laravel }}" "illuminate/console:${{ matrix.laravel }}" "illuminate/database:${{ matrix.laravel }}" --no-update --no-interaction
           composer require "orchestra/testbench:${{ matrix.testbench }}" --dev --no-update --no-interaction
 
       - name: Install dependencies

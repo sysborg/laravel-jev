@@ -42,3 +42,7 @@ every one of them is listed under a **Breaking** heading.
   config `jev.alerts.*`), `CreditsExhausted` (402) and `JudgeRulesChanged` (409), published by a new
   `Alert` pipeline stage after the lifecycle events.
 - Every event now carries the connection name and the model (requested or connection default).
+- Usage and cost accounting: `jev_runs` migration (`--tag=jev-migrations`), database usage repository
+  (`jev.usage.driver = database`), `JevRun` model, `JevUsage` reports (`lastDays(7)->byModel()->get()`,
+  `today()->total()`), and the `jev:usage`, `jev:balance`, `jev:models` and `jev:prune` commands.
+- Minimum Laravel 11 version raised to 11.45.

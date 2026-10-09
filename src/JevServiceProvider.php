@@ -9,8 +9,14 @@ use Illuminate\Contracts\Cache\Factory as CacheFactory;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Database\ConnectionResolverInterface;
 use Illuminate\Support\ServiceProvider;
 use Psr\Log\LoggerInterface;
+use Sysborg\LaravelJevai\Adapters\Console\BalanceCommand;
+use Sysborg\LaravelJevai\Adapters\Console\ModelsCommand;
+use Sysborg\LaravelJevai\Adapters\Console\PruneCommand;
+use Sysborg\LaravelJevai\Adapters\Console\UsageCommand;
+use Sysborg\LaravelJevai\Adapters\Database\EloquentUsageRepository;
 use Sysborg\LaravelJevai\Adapters\Jev\ConnectionRegistry;
 use Sysborg\LaravelJevai\Adapters\Jev\GatewayFactory;
 use Sysborg\LaravelJevai\Adapters\Jev\JevConnection;
@@ -38,6 +44,7 @@ use Sysborg\LaravelJevai\Application\Support\Redactor;
 use Sysborg\LaravelJevai\Application\Support\RequestValidator;
 use Sysborg\LaravelJevai\Application\Support\RetryPolicy;
 use Sysborg\LaravelJevai\Application\Support\SafeEventPublisher;
+use Sysborg\LaravelJevai\Domain\Exceptions\InvalidValue;
 use Sysborg\LaravelJevai\Ports\Driven\AccountGateway;
 use Sysborg\LaravelJevai\Ports\Driven\Clock;
 use Sysborg\LaravelJevai\Ports\Driven\Debouncer;
@@ -81,22 +88,36 @@ final class JevServiceProvider extends ServiceProvider
     }
 
     /**
-     * Make the config publishable when running in the console.
+     * Register the console commands and the publishable config and migration.
      *
      * Example:
      * ```bash
      * php artisan vendor:publish --tag=jev-config
+     * php artisan vendor:publish --tag=jev-migrations
      * ```
      *
-     * @return void Nothing; publishable paths are registered.
+     * @return void Nothing; commands and publishable paths are registered.
      */
     public function boot(): void
     {
-        if ($this->app->runningInConsole()) {
-            $this->publishes([
-                __DIR__.'/../config/jev.php' => config_path('jev.php'),
-            ], 'jev-config');
+        if (! $this->app->runningInConsole()) {
+            return;
         }
+
+        $this->publishes([
+            __DIR__.'/../config/jev.php' => config_path('jev.php'),
+        ], 'jev-config');
+
+        $this->publishesMigrations([
+            __DIR__.'/../database/migrations' => database_path('migrations'),
+        ], 'jev-migrations');
+
+        $this->commands([
+            UsageCommand::class,
+            BalanceCommand::class,
+            ModelsCommand::class,
+            PruneCommand::class,
+        ]);
     }
 
     /**
@@ -116,7 +137,19 @@ final class JevServiceProvider extends ServiceProvider
         $this->app->singleton(IdGenerator::class, UuidV7IdGenerator::class);
         $this->app->singleton(Tracer::class, NullTracer::class);
         $this->app->singleton(MetricsRecorder::class, NullMetricsRecorder::class);
-        $this->app->singleton(UsageRepository::class, NullUsageRepository::class);
+        $this->app->singleton(UsageRepository::class, function (Container $app): UsageRepository {
+            $settings = $app->make(Settings::class);
+
+            return match ($driver = $settings->string('usage.driver', 'null')) {
+                'null' => new NullUsageRepository,
+                'database' => new EloquentUsageRepository(
+                    $app->make(ConnectionResolverInterface::class),
+                    $settings->nullableString('usage.connection'),
+                    $settings->string('usage.table', 'jev_runs'),
+                ),
+                default => throw InvalidValue::because("config jev.usage.driver [{$driver}]", 'must be "null" or "database"'),
+            };
+        });
         $this->app->singleton(EventPublisher::class, LaravelEventPublisher::class);
 
         $this->app->singleton(self::LOGGER, function (Container $app): LoggerInterface {

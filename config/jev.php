@@ -139,15 +139,22 @@ return [
     | Usage records
     |--------------------------------------------------------------------------
     |
-    | One record per call for token and cost accounting. Until the database
-    | repository ships, records are discarded. `store_payloads` also keeps
-    | the raw response body (may contain personal data).
+    | One record per call (success or final failure) for token and cost
+    | accounting. `driver`: "null" discards records, "database" stores them
+    | in `table` on the DB `connection` (publish the migration first:
+    | php artisan vendor:publish --tag=jev-migrations && php artisan migrate).
+    | `store_payloads` also keeps the raw response body (may contain personal
+    | data). `retention_days` is used by `php artisan jev:prune`.
     |
     */
 
     'usage' => [
         'enabled' => true,
+        'driver' => env('JEV_AI_USAGE_DRIVER', 'null'),
+        'connection' => env('JEV_AI_USAGE_DB_CONNECTION'),
+        'table' => 'jev_runs',
         'store_payloads' => false,
+        'retention_days' => (int) env('JEV_AI_USAGE_RETENTION_DAYS', 90),
     ],
 
     /*
