@@ -30,6 +30,37 @@ The package follows ports & adapters. The rules below are enforced by `tests/Arc
 
 See [docs/open-beta-tasks.md](docs/open-beta-tasks.md) for the roadmap.
 
+## Documentation rules
+
+Every method, whatever its visibility (public, protected, private, constructors, abstract,
+interface and enum methods), has a docblock with:
+
+- a one-line summary, plus extra detail when the behaviour is not obvious;
+- an `Example:` block with a short code snippet;
+- `@param` for each parameter, **with a description**;
+- `@return` **with a description** (not on constructors);
+- `@throws` for each exception the method can raise, saying when.
+
+```php
+/**
+ * Get a choice answer.
+ *
+ * Example:
+ * ```php
+ * $answers->choice('department')->choice; // 'billing'
+ * ```
+ *
+ * @param  string  $questionId  The question id.
+ * @return ChoiceAnswer The answer.
+ *
+ * @throws AnswerNotFound When Jev did not answer that question.
+ * @throws AnswerTypeMismatch When the answer is not a choice answer.
+ */
+```
+
+Pint's Laravel preset removes `@param`/`@return` tags that only repeat the type, so always
+include a description.
+
 ## Pull requests
 
 - One task per PR when possible; reference its ID in the title, e.g. `feat(domain): question value objects [D-01]`.

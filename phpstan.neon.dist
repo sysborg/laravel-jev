@@ -6,3 +6,6 @@ parameters:
     paths:
         - src
     tmpDir: build/phpstan
+    # Value objects re-check their PHPDoc contracts at runtime on purpose:
+    # callers may not run static analysis.
+    treatPhpDocTypesAsCertain: false

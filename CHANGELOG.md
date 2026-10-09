@@ -13,3 +13,7 @@ every one of them is listed under a **Breaking** heading.
 - Project foundation: Composer package, service provider with publishable `config/jev.php`,
   ports & adapters directory layout, Pest + Testbench, Larastan (level max), Pint,
   architecture tests and GitHub Actions CI matrix.
+- Domain layer: question and answer value objects, `QuestionSet` / `AnswerSet`, `DecisionRequest`
+  (inline questions or saved judge), `State`, `Trace`, `Context`, `JudgeRef`, `DecisionResult`,
+  `Usage`, `Billing` / `BillingMode`, `CorrelationId`, `RunMetadata`, web-context request/result
+  types, and the `JevException` hierarchy with retry and billing semantics.
