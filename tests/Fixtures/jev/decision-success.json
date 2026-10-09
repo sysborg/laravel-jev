@@ -1,0 +1,24 @@
+{
+  "model": "jev-latest",
+  "id": "dec_01JBX4",
+  "provider": "jev",
+  "answers": {
+    "is_urgent": { "type": "noul", "noul": 0.95 },
+    "department": {
+      "type": "choice",
+      "choice": "billing",
+      "confidence": 0.98,
+      "probabilities": { "billing": 0.99, "technical": 0.01, "sales": 0.0 }
+    },
+    "frustration": {
+      "type": "score",
+      "score": 1.04,
+      "confidence": 0.94,
+      "legend": { "0": "Calm", "1": "Frustrated", "2": "Very angry" },
+      "probabilities": { "0": 0.0, "1": 0.96, "2": 0.04 }
+    }
+  },
+  "usage": { "input_tokens": 120, "output_tokens": 8 },
+  "billing": { "mode": "tokens", "input_tokens_charged": 120, "credits_charged": 0 },
+  "some_future_field": { "ignored": true }
+}

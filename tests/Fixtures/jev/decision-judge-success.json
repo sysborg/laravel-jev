@@ -1,0 +1,8 @@
+{
+  "model": "jev-latest",
+  "id": "dec_01JBX5",
+  "answers": {
+    "is_compliant": { "type": "noul", "noul": 0.12 }
+  },
+  "usage": { "input_tokens": 340, "output_tokens": 4 }
+}

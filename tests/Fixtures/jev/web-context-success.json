@@ -1,0 +1,23 @@
+{
+  "decision": "yes",
+  "confidence": 0.88,
+  "with_web": {
+    "answer": { "type": "choice", "choice": "yes", "probabilities": { "yes": 0.88, "no": 0.12 }, "confidence": 0.88 },
+    "usage": {}
+  },
+  "without_web": {
+    "answer": { "type": "choice", "choice": "no" },
+    "usage": {}
+  },
+  "sources": [
+    {
+      "title": "OpenAI releases GPT-6",
+      "url": "https://example.com/gpt-6",
+      "publishedDate": "2026-09-10T00:00:00.000Z",
+      "highlights": ["OpenAI released GPT-6 today."]
+    }
+  ],
+  "source_weights": null,
+  "usage": { "input_tokens": 2140, "output_tokens": 12, "jev_calls": 2, "web_search": true },
+  "latency": { "search_ms": 560, "jev_ms": 410 }
+}

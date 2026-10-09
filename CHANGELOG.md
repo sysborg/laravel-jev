@@ -9,6 +9,10 @@ every one of them is listed under a **Breaking** heading.
 
 ## [Unreleased]
 
+### Breaking
+- Config moved to `jev.default` and `jev.connections.{name}` (`api_key`, `base_url`, `model`,
+  `timeout`). Republish `config/jev.php` if you published it before.
+
 ### Added
 - Project foundation: Composer package, service provider with publishable `config/jev.php`,
   ports & adapters directory layout, Pest + Testbench, Larastan (level max), Pint,
@@ -21,3 +25,7 @@ every one of them is listed under a **Breaking** heading.
   `UsageRepository`, `Tracer` / `Span`, `MetricsRecorder`, `Clock`, `IdGenerator`) and the driving
   `Jev` contract, plus the domain types they need (`Balance`, `JevEvent`, `PendingDecision`,
   `RunRecord`, `UsageQuery`, `UsageSummary`).
+- Jev HTTP adapter: `HttpDecisionGateway`, `HttpWebContextGateway`, `HttpAccountGateway` on Laravel's
+  HTTP client, with error mapping, header/billing mapping, strict-but-tolerant response parsing,
+  per-connection configuration (`ConnectionRegistry`, `GatewayFactory`), a leak-proof `ApiKey`
+  and `SystemClock`.
